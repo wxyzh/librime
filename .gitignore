@@ -1,1 +1,18 @@
+<<<<<<< HEAD
 .gitignore
+=======
+build/
+build-static/
+debug/
+dist/
+data/*
+include/*
+lib/*
+bin/*
+share/*
+deps/*/*
+env.bat
+node_modules/
+*~
+.*.swp
+>>>>>>> 604
