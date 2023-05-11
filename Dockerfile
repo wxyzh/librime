@@ -4,7 +4,7 @@ RUN apt update
 RUN apt install -y \
 cmake \
 libboost-dev \
-libboost-filesystem-dev libboost-regex-dev libboost-system-dev libboost-locale-dev \
+libboost-regex-dev libboost-system-dev libboost-locale-dev \
 libgoogle-glog-dev \
 libgtest-dev \
 libyaml-cpp-dev \

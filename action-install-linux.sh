@@ -2,10 +2,8 @@
 
 dep_packages=(
     doxygen
-    libboost-filesystem-dev
     libboost-locale-dev
     libboost-regex-dev
-    libboost-system-dev
     libgoogle-glog-dev
     libleveldb-dev
     libmarisa-dev

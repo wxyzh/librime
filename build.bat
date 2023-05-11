@@ -120,10 +120,8 @@ rem set curl=%RIME_ROOT%\bin\curl.exe
 rem set download="%curl%" --remote-name-all
 
 set boost_compiled_libs=--with-date_time^
- --with-filesystem^
  --with-locale^
  --with-regex^
- --with-system^
  --with-thread
 
 rem the number actually means platform toolset, not %VisualStudioVersion%
