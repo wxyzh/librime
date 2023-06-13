@@ -6,7 +6,6 @@
 //
 #include <fstream>
 #include <boost/algorithm/string.hpp>
-#include <rime/algo/utilities.h>
 #include <rime/common.h>
 #include <rime/dict/db_utils.h>
 #include <rime/dict/tsv.h>
@@ -31,7 +30,8 @@ int TsvReader::operator() (Sink* sink) {
       if (boost::starts_with(line, "#@")) {
         // metadata
         line.erase(0, 2);
-        row = StringUtils::Split(line, "\t");
+        boost::algorithm::split(row, line,
+                                boost::algorithm::is_any_of("\t"));
         if (row.size() != 2 ||
             !sink->MetaPut(row[0], row[1])) {
           LOG(WARNING) << "invalid metadata at line " << line_no << ".";
@@ -44,7 +44,8 @@ int TsvReader::operator() (Sink* sink) {
       continue;
     }
     // read a tsv entry
-    row = StringUtils::Split(line, "\t");
+    boost::algorithm::split(row, line,
+                            boost::algorithm::is_any_of("\t"));
     if (!parser_(row, &key, &value) ||
         !sink->Put(key, value)) {
       LOG(WARNING) << "invalid entry at line " << line_no << ".";

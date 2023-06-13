@@ -6,7 +6,7 @@
 //
 #include <fstream>
 #include <boost/algorithm/string.hpp>
-#include <rime/algo/utilities.h>
+#include <boost/lexical_cast.hpp>
 #include <rime/dict/dict_settings.h>
 #include <rime/dict/entry_collector.h>
 #include <rime/dict/preset_vocabulary.h>
@@ -86,7 +86,9 @@ void EntryCollector::Collect(const string& dict_file) {
       continue;
     }
     // read a dict entry
-    vector<string> row = StringUtils::Split(line, "\t");
+    vector<string> row;
+    boost::algorithm::split(row, line,
+                            boost::algorithm::is_any_of("\t"));
     int num_columns = static_cast<int>(row.size());
     if (num_columns <= text_column || row[text_column].empty()) {
       LOG(WARNING) << "Missing entry text at #" << num_entries << ".";
@@ -163,7 +165,7 @@ void EntryCollector::CreateEntry(const string &word,
   if (scaled) {
     double percentage = 100.0;
     try {
-      percentage = std::stod(
+      percentage = boost::lexical_cast<double>(
           weight_str.substr(0, weight_str.length() - 1));
     }
     catch (...) {
@@ -174,7 +176,7 @@ void EntryCollector::CreateEntry(const string &word,
   }
   else if (!weight_str.empty()) {  // absolute weight
     try {
-      e.weight = std::stod(weight_str);
+      e.weight = boost::lexical_cast<double>(weight_str);
     }
     catch (...) {
       LOG(WARNING) << "invalid entry definition at #" << num_entries << ".";
@@ -204,7 +206,7 @@ void EntryCollector::CreateEntry(const string &word,
     words[e.text][code_str] += e.weight;
     total_weight[e.text] += e.weight;
   }
-  entries.emplace_back(e);
+  entries.emplace_back(New<RawDictEntry>(e));
   ++num_entries;
 }
 
@@ -213,7 +215,7 @@ bool EntryCollector::TranslateWord(const string& word,
   ReverseLookupTable::const_iterator s = stems.find(word);
   if (s != stems.end()) {
     for (const string& stem : s->second) {
-      result->emplace_back(stem);
+      result->push_back(stem);
     }
     return true;
   }
@@ -224,7 +226,7 @@ bool EntryCollector::TranslateWord(const string& word,
       double min_weight = total_weight[word] * kMinimalWeight;
       if (v.second < min_weight)
         continue;
-      result->emplace_back(v.first);
+      result->push_back(v.first);
     }
     return true;
   }
@@ -238,10 +240,10 @@ void EntryCollector::Dump(const string& file_name) const {
     out << "# - " << syllable << std::endl;
   }
   out << std::endl;
-  for (const RawDictEntry& e : entries) {
-    out << e.text << '\t'
-        << e.raw_code.ToString() << '\t'
-        << e.weight << std::endl;
+  for (const auto &e : entries) {
+    out << e->text << '\t'
+        << e->raw_code.ToString() << '\t'
+        << e->weight << std::endl;
   }
   out.close();
 }

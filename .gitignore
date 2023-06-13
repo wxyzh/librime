@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-.gitignore
-=======
 build/
 build-static/
 debug/
@@ -15,4 +12,4 @@ env.bat
 node_modules/
 *~
 .*.swp
->>>>>>> 604
+.cache/

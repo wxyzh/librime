@@ -6,7 +6,6 @@
 //
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include <rime/algo/utilities.h>
 #include <rime/dict/table_db.h>
 #include <rime/dict/user_db.h>
 
@@ -46,7 +45,8 @@ static bool rime_table_entry_formatter(const string& key,
                                        Tsv* tsv) {
   Tsv& row(*tsv);
   // key ::= code <space> <Tab> phrase
-  row = StringUtils::Split(key, "\t");
+  boost::algorithm::split(row, key,
+                          boost::algorithm::is_any_of("\t"));
   if (row.size() != 2 ||
       row[0].empty() || row[1].empty())
     return false;
@@ -55,7 +55,7 @@ static bool rime_table_entry_formatter(const string& key,
     return false;
   boost::algorithm::trim(row[0]);  // remove trailing space
   row[0].swap(row[1]);
-  row.emplace_back(boost::lexical_cast<string>(v.commits));
+  row.push_back(boost::lexical_cast<string>(v.commits));
   return true;
 }
 

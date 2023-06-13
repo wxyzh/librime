@@ -22,9 +22,9 @@ struct RawDictEntry {
 };
 
 // code -> weight
-using WeightMap = hash_map<string, double>;
+using WeightMap = map<string, double>;
 // word -> { code -> weight }
-using WordMap = hash_map<string, WeightMap>;
+using WordMap = map<string, WeightMap>;
 // [ (word, weight), ... ]
 using EncodeQueue = std::queue<pair<string, string>>;
 
@@ -35,7 +35,7 @@ class EntryCollector : public PhraseCollector {
  public:
   Syllabary syllabary;
   bool build_syllabary = true;
-  vector<RawDictEntry> entries;
+  vector<of<RawDictEntry>> entries;
   size_t num_entries = 0;
   ReverseLookupTable stems;
 
@@ -66,7 +66,7 @@ class EntryCollector : public PhraseCollector {
   the<PresetVocabulary> preset_vocabulary;
   the<Encoder> encoder;
   EncodeQueue encode_queue;
-  hash_set<string/* word */> collection;
+  set<string/* word */> collection;
   WordMap words;
   WeightMap total_weight;
 };

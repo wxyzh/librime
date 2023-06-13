@@ -5,6 +5,7 @@
 // 2011-11-27 GONG Chen <chen.sst@gmail.com>
 //
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 #include <utf8.h>
 #include <rime/resource.h>
 #include <rime/service.h>
@@ -76,7 +77,7 @@ bool PresetVocabulary::GetWeightForEntry(const string &key, double *weight) {
   if (!db_ || !db_->Fetch(key, &weight_str))
     return false;
   try {
-    *weight = std::stod(weight_str);
+    *weight = boost::lexical_cast<double>(weight_str);
   }
   catch (...) {
     return false;
@@ -109,7 +110,7 @@ bool PresetVocabulary::IsQualifiedPhrase(const string& phrase,
       return false;
   }
   if (min_phrase_weight_ > 0.0) {
-    double weight = std::stod(weight_str);
+    double weight = boost::lexical_cast<double>(weight_str);
     if (weight < min_phrase_weight_)
       return false;
   }
