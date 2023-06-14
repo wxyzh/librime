@@ -18,7 +18,7 @@ jobs:
       rime_plugins: rime/librime-charcode hchunhui/librime-lua lotem/librime-octagram
       
   win64:
-    uses: ./.github/workflows/windows-x64-build.yml
+    uses: ./.github/workflows/win64-build.yml
     with:
       rime_plugins: rime/librime-charcode hchunhui/librime-lua lotem/librime-octagram
       
