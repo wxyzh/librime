@@ -37,7 +37,7 @@ jobs:
           path: |
             ${{ env.BOOST_ROOT }}.7z
             ${{ env.BOOST_ROOT }}\stage
-          key: ${{ runner.os }}-boost-${{ env.boost_version }}
+          key: ${{ env.ARCH }}-boost-${{ env.boost_version }}
 
       - name: Extract Boost source tarball
         if: steps.cache-boost.outputs.cache-hit == 'true'
@@ -62,7 +62,7 @@ jobs:
             include
             lib
             share
-          key: ${{ runner.os }}-deps-${{ hashFiles('submodule-status') }}
+          key: ${{ env.ARCH }}-deps-${{ hashFiles('submodule-status') }}
 
       - name: Build dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
