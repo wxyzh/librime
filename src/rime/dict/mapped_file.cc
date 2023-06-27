@@ -7,14 +7,14 @@
 // 2011-06-30 GONG Chen <chen.sst@gmail.com>
 //
 #include <fstream>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <rime/dict/mapped_file.h>
 
-#ifdef BOOST_RESIZE_FILE
+#ifdef STD_RESIZE_FILE
 
-#define RESIZE_FILE boost::filesystem::resize_file
+#define RESIZE_FILE std::filesystem::resize_file
 
 #else
 
@@ -35,7 +35,7 @@ static BOOL resize_file_api(const char* p, boost::uintmax_t size) {
 #define RESIZE_FILE(P, SZ) (::truncate(P, SZ) == 0)
 #endif  // _WIN32
 
-#endif  // BOOST_RESIZE_FILE
+#endif  // STD_RESIZE_FILE
 
 namespace rime {
 
@@ -126,7 +126,7 @@ void MappedFile::Close() {
 }
 
 bool MappedFile::Exists() const {
-  return boost::filesystem::exists(file_name_);
+  return std::filesystem::exists(file_name_);
 }
 
 bool MappedFile::IsOpen() const {

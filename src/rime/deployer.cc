@@ -7,7 +7,7 @@
 #include <chrono>
 #include <utility>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <rime/deployer.h>
 
 namespace rime {
@@ -137,7 +137,7 @@ void Deployer::JoinMaintenanceThread() {
 }
 
 string Deployer::user_data_sync_dir() const {
-  return (boost::filesystem::path(sync_dir) / user_id).string();
+  return (std::filesystem::path(sync_dir) / user_id).string();
 }
 
 }  // namespace rime

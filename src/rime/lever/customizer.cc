@@ -11,7 +11,7 @@
 #include <rime/algo/utilities.h>
 #include <rime/lever/customizer.h>
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace rime {
 
@@ -89,7 +89,7 @@ bool Customizer::UpdateConfigFile() {
   if (redistribute || (is_dirty && !missing_original_copy)) {
     try {
       fs::copy_file(source_path_, dest_path_,
-                    fs::copy_option::overwrite_if_exists);
+                    fs::copy_options::overwrite_existing);
     } catch (...) {
       LOG(ERROR) << "Error copying config file '" << source_path_.string()
                  << "' to user directory.";
