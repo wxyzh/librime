@@ -4,7 +4,6 @@
 //
 
 #include <boost/algorithm/string.hpp>
-#include <boost/dll.hpp>
 #include <filesystem>
 #include <rime/build_config.h>
 #include <rime/common.h>
@@ -12,6 +11,7 @@
 #include <rime/module.h>
 #include <rime/registry.h>
 #include <rime_api.h>
+#include "dll.h"
 
 namespace fs = std::filesystem;
 
@@ -28,7 +28,7 @@ class PluginManager {
  private:
   PluginManager() = default;
 
-  map<string, boost::dll::shared_library> plugin_libs_;
+  map<string, SharedLibrary> plugin_libs_;
 };
 
 void PluginManager::LoadPlugins(fs::path plugins_dir) {
@@ -39,7 +39,7 @@ void PluginManager::LoadPlugins(fs::path plugins_dir) {
   LOG(INFO) << "loading plugins from " << plugins_dir;
   for (fs::directory_iterator iter(plugins_dir), end; iter != end; ++iter) {
     fs::path plugin_file = iter->path();
-    if (plugin_file.extension() == boost::dll::shared_library::suffix()) {
+    if (plugin_file.extension() == SharedLibrary::suffix()) {
       fs::file_status plugin_file_status = fs::status(plugin_file);
       if (fs::is_regular_file(plugin_file_status)) {
         DLOG(INFO) << "found plugin: " << plugin_file;
@@ -48,7 +48,7 @@ void PluginManager::LoadPlugins(fs::path plugins_dir) {
           LOG(INFO) << "loading plugin '" << plugin_name
                     << "' from " << plugin_file;
           try {
-            auto plugin_lib = boost::dll::shared_library(plugin_file);
+            auto plugin_lib = SharedLibrary(plugin_file.string());
             plugin_libs_[plugin_name] = plugin_lib;
           } catch (const std::exception& ex) {
             LOG(ERROR) << "error loading plugin " << plugin_name << ": "
