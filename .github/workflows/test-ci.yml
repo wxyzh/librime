@@ -12,18 +12,13 @@ jobs:
       build_variant: '-universal'
       rime_plugins: rime/librime-charcode hchunhui/librime-lua lotem/librime-octagram
 
-  win32:
+  windows:
     uses: ./.github/workflows/windows-build.yml
     with:
       rime_plugins: rime/librime-charcode hchunhui/librime-lua lotem/librime-octagram
-      
-  win64:
-    uses: ./.github/workflows/win64-build.yml
-    with:
-      rime_plugins: rime/librime-charcode hchunhui/librime-lua lotem/librime-octagram
-      
+
   release:
-    needs: [macos, win32, win64]
+    needs: [macos, windows]
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
