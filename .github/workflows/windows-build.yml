@@ -16,11 +16,17 @@ jobs:
       fail-fast: false
       matrix:
         compiler: [msvc, clang]
+        arch: [Win32, x64] # 架构矩阵
+        exclude:
+          - compiler: clang
+            arch: Win32
     env:
       boost_version: 1.83.0
       BOOST_ROOT: ${{ github.workspace }}\deps\boost_1_83_0
       build_script: ${{ matrix.compiler == 'msvc' && './build.bat' || './build-clang.bat' }}
+      boost_arg: ${{ (matrix.arch == 'x64' && matrix.compiler == 'msvc') && 'boost_x64' || 'boost' }}
       RIME_PLUGINS: ${{ inputs.rime_plugins }}
+      ARCH: ${{ matrix.arch }}
     steps:
       - name: Checkout last commit
         uses: actions/checkout@v3
@@ -51,7 +57,7 @@ jobs:
         with:
           path: |
             ${{ env.BOOST_ROOT }}.7z
-          key: ${{ runner.os }}-boost-${{ env.boost_version }}-${{ matrix.compiler }}-src
+          key: ${{ runner.os }}-boost-${{ env.boost_version }}-${{ matrix.compiler }}-${{ env.ARCH }}-src
 
       - name: Download Boost source
         if: steps.cache-boost-src.outputs.cache-hit != 'true'
@@ -70,11 +76,11 @@ jobs:
         with:
           path: |
             ${{ env.BOOST_ROOT }}\stage
-          key: ${{ runner.os }}-boost-${{ env.boost_version }}-${{ matrix.compiler }}-lib
+          key: ${{ runner.os }}-boost-${{ env.boost_version }}-${{ matrix.compiler }}-${{ env.ARCH }}-lib
 
       - name: Install Boost
         if: steps.cache-boost-lib.outputs.cache-hit != 'true'
-        run: ${{ env.build_script }} boost
+        run: ${{ env.build_script }} ${{ env.boost_arg }} 
 
       - name: Cache dependencies
         id: cache-deps
@@ -85,7 +91,7 @@ jobs:
             include
             lib
             share
-          key: ${{ runner.os }}-${{ matrix.compiler }}-${{ hashFiles('submodule-status') }}
+          key: ${{ runner.os }}-${{ matrix.compiler }}-${{ hashFiles('submodule-status') }}-${{ env.ARCH }}
 
       - name: Build dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
@@ -100,9 +106,9 @@ jobs:
       - name: Create distributable
         if: ${{ matrix.compiler == 'msvc' }}
         run: |
-          7z a rime-${{ env.git_ref_name }}-${{ runner.os }}.7z `
+          7z a rime-${{ env.git_ref_name }}-${{ runner.os }}-${{ matrix.compiler }}-${{ env.ARCH }}.7z `
           dist version-info.txt
-          7z a -x'!*/.placeholder' rime-deps-${{ env.git_ref_name }}-${{ runner.os }}.7z `
+          7z a -x'!*/.placeholder' rime-deps-${{ env.git_ref_name }}-${{ runner.os }}-${{ matrix.compiler }}-${{ env.ARCH }}.7z `
           bin include lib share
 
       - name: Upload artifacts
@@ -110,11 +116,11 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: |
-            rime-${{ env.git_ref_name }}-${{ runner.os }}.7z
-            rime-deps-${{ env.git_ref_name }}-${{ runner.os }}.7z
+            rime-${{ env.git_ref_name }}-${{ runner.os }}-${{ matrix.compiler }}-${{ env.ARCH }}.7z
+            rime-deps-${{ env.git_ref_name }}-${{ runner.os }}-${{ matrix.compiler }}-${{ env.ARCH }}.7z
 
   build-mingw:
-    runs-on: windows-latest
+    runs-on: windows-latest 
     defaults:
       run:
         shell: msys2 {0}
@@ -128,7 +134,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain ninja \
+          pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain ninja p7zip \
             mingw64/mingw-w64-x86_64-cmake \
             mingw-w64-x86_64-boost \
             mingw-w64-x86_64-glog \
@@ -148,3 +154,14 @@ jobs:
             -DBUILD_SHARED_LIBS:BOOL=ON
           cmake --build build
           cd build/test && cp ../lib/librime.dll . && ./rime_test
+          
+      - name: Create distributable
+        run: |
+          7z a rime-${{ github.ref_name }}-${{ runner.os }}-mingw64.7z \
+          build/bin include build/lib share
+          
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            rime-${{ github.ref_name }}-${{ runner.os }}-mingw64.7z
