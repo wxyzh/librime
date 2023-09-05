@@ -271,6 +271,7 @@ set rime_cmake_flags=%common_cmake_flags%^
  -DBUILD_SHARED_LIBS=%build_shared%^
  -DBUILD_TEST=%build_test%^
  -DENABLE_LOGGING=%enable_logging%^
+ -DNOMINMAX=1^
  -DCMAKE_CONFIGURATION_TYPES="%build_config%"^
  -DCMAKE_INSTALL_PREFIX:PATH="%RIME_ROOT%\dist"
 
