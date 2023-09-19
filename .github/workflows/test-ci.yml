@@ -6,17 +6,21 @@ on: workflow_dispatch
 jobs:
   linux:
     uses: ./.github/workflows/linux-build.yml
+    with:
+      repository: rime/librime
 
   macos:
     uses: ./.github/workflows/macos-build.yml
     with:
       build_variant: '-universal'
       rime_plugins: rime/librime-charcode hchunhui/librime-lua lotem/librime-octagram
+      repository: rime/librime
 
   windows:
     uses: ./.github/workflows/windows-build.yml
     with:
       rime_plugins: rime/librime-charcode hchunhui/librime-lua lotem/librime-octagram
+      repository: rime/librime
 
   release:
     needs: [macos, windows]
@@ -25,12 +29,3 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
 
-      - name: Create GitHub release
-        uses: 'marvinpinto/action-automatic-releases@latest'
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          draft: true
-          prerelease: ${{ contains(github.ref_name, '-') }}
-          title: librime ${{ github.ref_name }}
-          files: |
-            artifact/*
