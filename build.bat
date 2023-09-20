@@ -8,9 +8,6 @@ if not exist env.bat copy env.bat.template env.bat
 
 if exist env.bat call .\env.bat
 
-rem for Windows XP compatibility (Visual Studio 2015+)
-set CL=/Zc:threadSafeInit-
-
 set OLD_PATH=%PATH%
 if defined DEVTOOLS_PATH set PATH=%OLD_PATH%;%DEVTOOLS_PATH%
 path
@@ -247,7 +244,7 @@ if %build_deps% == 1 (
 
   echo building marisa.
   pushd deps\marisa-trie
-  cmake .. -B%build_dir% %deps_cmake_flags%
+  cmake . -B%build_dir% %deps_cmake_flags%
   if errorlevel 1 goto error
   cmake --build %build_dir% --config %build_config% --target INSTALL
   if errorlevel 1 goto error

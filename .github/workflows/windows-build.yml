@@ -23,7 +23,7 @@ jobs:
       RIME_PLUGINS: ${{ inputs.rime_plugins }}
     steps:
       - name: Checkout last commit
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repository }}
           submodules: recursive
@@ -124,7 +124,7 @@ jobs:
         uses: msys2/setup-msys2@v2
 
       - name: Checkout last commit
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repository }}
 
@@ -139,6 +139,10 @@ jobs:
             mingw-w64-x86_64-leveldb \
             mingw-w64-x86_64-marisa \
             mingw-w64-x86_64-opencc
+
+      - name: Configure build environment
+        run: |
+          echo git_ref_name="$(git describe --always)" >> $GITHUB_ENV
 
       - name: Install Rime plugins
         run: ./action-install-plugins-macos.sh
