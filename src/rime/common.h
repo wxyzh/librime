@@ -20,14 +20,9 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
-#include <boost/optional.hpp>
 #define BOOST_BIND_NO_PLACEHOLDERS
-#ifdef RIME_BOOST_SIGNALS2
 #include <boost/signals2/connection.hpp>
 #include <boost/signals2/signal.hpp>
-#else
-#include <boost/signals.hpp>
-#endif
 
 #ifdef RIME_ENABLE_LOGGING
 #define GLOG_NO_ABBREVIATED_SEVERITIES
@@ -43,7 +38,6 @@
 
 namespace rime {
 
-using boost::optional;
 using std::function;
 using std::list;
 using std::make_pair;
@@ -83,13 +77,8 @@ inline an<T> New(Args&&... args) {
   return std::make_shared<T>(std::forward<Args>(args)...);
 }
 
-#ifdef RIME_BOOST_SIGNALS2
 using boost::signals2::connection;
 using boost::signals2::signal;
-#else
-using boost::signal;
-using boost::signals::connection;
-#endif
 
 }  // namespace rime
 

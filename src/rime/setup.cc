@@ -14,14 +14,14 @@
 #include <glog/logging.h>
 #endif  // RIME_ENABLE_LOGGING
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <rime_api.h>
 #include <rime/deployer.h>
 #include <rime/module.h>
 #include <rime/service.h>
 #include <rime/setup.h>
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace rime {
 
@@ -80,7 +80,11 @@ RIME_API void SetupLogging(const char* app_name,
   FLAGS_minloglevel = min_log_level;
   FLAGS_alsologtostderr = true;
   if (log_dir) {
-    FLAGS_log_dir = log_dir;
+    if (log_dir[0] == '\0') {
+      FLAGS_logtostderr = true;
+    } else {
+      FLAGS_log_dir = log_dir;
+    }
   }
   // Do not allow other users to read/write log files created by current
   // process.

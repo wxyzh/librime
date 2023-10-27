@@ -2,8 +2,9 @@
 // Copyright RIME Developers
 // Distributed under the BSD License
 //
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <rime/service.h>
+#include <rime/algo/fs.h>
 #include <rime/config/config_compiler.h>
 #include <rime/config/config_types.h>
 #include <rime/config/plugins.h>
@@ -19,6 +20,7 @@ bool BuildInfoPlugin::ReviewLinkOutput(ConfigCompiler* compiler,
                                        an<ConfigResource> resource) {
   auto build_info = (*resource)["__build_info"];
   build_info["rime_version"] = RIME_VERSION;
+#ifndef RIME_NO_TIMESTAMP
   auto timestamps = build_info["timestamps"];
   compiler->EnumerateResources([&](an<ConfigResource> resource) {
     if (!resource->loaded) {
@@ -35,8 +37,9 @@ bool BuildInfoPlugin::ReviewLinkOutput(ConfigCompiler* compiler,
     }
     // TODO: store as 64-bit number to avoid the year 2038 problem
     timestamps[resource->resource_id] =
-        (int)boost::filesystem::last_write_time(file_name);
+        (int)filesystem::to_time_t(std::filesystem::last_write_time(file_name));
   });
+#endif
   return true;
 }
 

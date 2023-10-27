@@ -6,9 +6,7 @@ RUN apt update && apt install -y \
   cmake \
   ninja-build \
   libboost-dev \
-  libboost-filesystem-dev \
   libboost-regex-dev \
-  libboost-system-dev \
   libboost-locale-dev \
   libgoogle-glog-dev \
   libgtest-dev \
@@ -22,6 +20,7 @@ COPY / /librime
 WORKDIR /librime/plugins
 RUN git clone https://github.com/rime/librime-charcode charcode && \
   git clone https://github.com/hchunhui/librime-lua lua && \
+  git clone https://github.com/rime/librime-predict predict && \
   git clone https://github.com/lotem/librime-octagram octagram
 
 WORKDIR /librime

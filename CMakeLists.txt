@@ -3,7 +3,7 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_fla
 
 cmake_minimum_required(VERSION 3.12)
 project(rime)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 set(rime_version 1.9.0)
 set(rime_soversion 1)
@@ -20,11 +20,11 @@ option(BUILD_SAMPLE "Build sample Rime plugin" OFF)
 option(BUILD_TEST "Build and run tests" ON)
 option(BUILD_SEPARATE_LIBS "Build separate rime-* libraries" OFF)
 option(ENABLE_LOGGING "Enable logging with google-glog library" ON)
-option(BOOST_USE_SIGNALS2 "Boost use signals2 instead of signals" ON)
 option(ENABLE_ASAN "Enable Address Sanitizer (Unix Only)" OFF)
 option(INSTALL_PRIVATE_HEADERS "Install private headers (usually needed for externally built Rime plugins)" OFF)
 option(ENABLE_EXTERNAL_PLUGINS "Enable loading of externally built Rime plugins (from directory set by RIME_PLUGINS_DIR variable)" OFF)
 option(ENABLE_THREADING "Enable threading for deployer" ON)
+option(ENABLE_TIMESTAMP "Embed timestamp to schema artifacts" ON)
 
 set(RIME_DATA_DIR "${CMAKE_INSTALL_FULL_DATADIR}/rime-data" CACHE STRING "Target directory for Rime data")
 set(RIME_PLUGINS_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/rime-plugins" CACHE STRING "Target directory for externally built Rime plugins")
@@ -58,18 +58,15 @@ if(MSVC)
   set(Boost_USE_STATIC_RUNTIME ON)
 endif()
 
-set(BOOST_COMPONENTS filesystem regex system)
-
-if(BOOST_USE_SIGNALS2)
-  set(RIME_BOOST_SIGNALS2 1)
+if(LINUX)
+  find_package(Boost 1.74.0 REQUIRED COMPONENTS regex)
 else()
-  set(BOOST_COMPONENTS ${BOOST_COMPONENTS} signals)
+  find_package(Boost 1.77.0)
 endif()
-
-find_package(Boost 1.74.0 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
   link_directories(${Boost_LIBRARY_DIRS})
+  add_definitions(-DBOOST_DLL_USE_STD_FS)
 endif()
 
 if(ENABLE_LOGGING)
@@ -95,6 +92,10 @@ find_package(Threads)
 
 if(NOT ENABLE_THREADING)
   add_definitions(-DRIME_NO_THREADING)
+endif()
+
+if(NOT ENABLE_TIMESTAMP)
+  add_definitions(-DRIME_NO_TIMESTAMP)
 endif()
 
 if(BUILD_TEST)
@@ -156,7 +157,7 @@ if(MSVC)
 endif()
 
 if(UNIX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 endif()
 
 if (NOT CMAKE_BUILD_PARALLEL_LEVEL)
