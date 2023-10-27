@@ -108,7 +108,7 @@ jobs:
           7z a rime-${{ env.git_ref_name }}-${{ runner.os }}-${{ matrix.compiler }}.7z `
           dist version-info.txt
           7z a -x'!*/.placeholder' rime-deps-${{ env.git_ref_name }}-${{ runner.os }}-${{ matrix.compiler }}.7z `
-          bin include lib share
+          bin include lib share build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
