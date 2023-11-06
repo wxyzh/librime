@@ -13,7 +13,7 @@ jobs:
       rime_plugins: hchunhui/librime-lua lotem/librime-octagram rime/librime-predict
 
   windows:
-    uses: wxyzh/librime/.github/workflows/windows-build.yml@Buildlibrime
+    uses: wxyzh/librime/.github/workflows/windows-build.yml@Buildlibrime-debug
     with:
       repository: rime/librime
       rime_plugins: hchunhui/librime-lua lotem/librime-octagram rime/librime-predict

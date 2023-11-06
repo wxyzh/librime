@@ -101,7 +101,7 @@ jobs:
         run: .\action-install-plugins-windows.bat
 
       - name: Build and test
-        run: ${{ env.build_script }} test
+        run: ${{ env.build_script }} debug
 
       - name: Create distributable
         run: |
