@@ -15,8 +15,8 @@ jobs:
   windows:
     uses: wxyzh/librime/.github/workflows/windows-build.yml@Buildlibrime
     with:
-      repository: lotem/librime
-      ref: predict-word
+      repository: rime/librime
+      ref: master
       rime_plugins: hchunhui/librime-lua lotem/librime-octagram rime/librime-predict
 
   release:
