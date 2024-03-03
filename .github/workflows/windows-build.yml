@@ -6,6 +6,10 @@ on:
         default: ${{ github.repository }}
         required: false
         type: string
+      ref:
+        default: master
+        required: false
+        type: string
       rime_plugins:
         required: false
         type: string
@@ -29,6 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repository }}
+          ref: ${{inputs.ref}}
           submodules: recursive
 
       - name: Create env.bat
