@@ -26,7 +26,7 @@ jobs:
           - { compiler: msvc, cc: cl, cxx: cl }
           - { compiler: clang, cc: clang, cxx: clang++ }
           - { compiler: msvc, arch: x86, cross_arch: x64_x86 }
-          - { compiler: msvc, arch: amd64, cross_arch: amd64_arm64 }
+          - { compiler: msvc, arch: arm64, cross_arch: amd64_arm64 }
     env:
       boost_version: 1.84.0
       BOOST_ROOT: ${{ github.workspace }}\deps\boost-1.84.0
@@ -72,7 +72,21 @@ jobs:
           git submodule > submodule-status
 
       - name: Install boost
+        if: ${{ matrix.arch != 'arm64' }}
         run: .\install-boost.bat
+        
+      - name: Install boost
+        if: ${{ matrix.arch == 'arm64' }}
+        shell: cmd
+        run: |
+          setlocal
+          if not defined RIME_ROOT set RIME_ROOT=%CD%
+          if not defined boost_version set boost_version=1.84.0
+          if not defined BOOST_ROOT set BOOST_ROOT=%RIME_ROOT%\deps\boost-%boost_version%
+          if exist "%BOOST_ROOT%\libs" goto boost_found
+          for %%I in ("%BOOST_ROOT%\.") do set src_dir=%%~dpI
+          mkdir %BOOST_ROOT%
+          vcpkg install boost
 
       - name: Cache dependencies
         id: cache-deps
