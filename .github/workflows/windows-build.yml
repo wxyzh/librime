@@ -26,6 +26,7 @@ jobs:
           - { compiler: msvc, cc: cl, cxx: cl }
           - { compiler: clang, cc: clang, cxx: clang++ }
           - { compiler: msvc, arch: x86, cross_arch: x64_x86 }
+          - { compiler: msvc, arch: amd64, cross_arch: amd64_arm64 }
     env:
       boost_version: 1.84.0
       BOOST_ROOT: ${{ github.workspace }}\deps\boost-1.84.0
@@ -36,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repository }}
-          branch: ${{inputs.branch}}
+          ref: ${{inputs.branch}}
           submodules: recursive
 
       - name: Create env.bat
