@@ -24,11 +24,11 @@ jobs:
         compiler: [msvc, clang]
         arch: [x64]
         include:
-          - {os: windows-2022, windows-2019}
-          - { compiler: msvc, cc: cl, cxx: cl }
-          - { compiler: clang, cc: clang, cxx: clang++ }
-          - { compiler: msvc, arch: x86, cross_arch: x64_x86 }
-          - { compiler: msvc, arch: arm64, cross_arch: amd64_arm64 }
+          - { os: windows-2022, compiler: msvc, cc: cl, cxx: cl }
+          - { os: windows-2019, compiler: msvc, cc: cl, cxx: cl }
+          - { os: windows-2022,compiler: clang, cc: clang, cxx: clang++ }
+          - { os: windows-2022,compiler: msvc, arch: x86, cross_arch: x64_x86 }
+          - { os: windows-2019,compiler: msvc, arch: x86, cross_arch: x64_x86 }
     env:
       boost_version: 1.84.0
       BOOST_ROOT: ${{ github.workspace }}\deps\boost-1.84.0
