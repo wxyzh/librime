@@ -24,6 +24,7 @@ jobs:
         compiler: [msvc, clang]
         arch: [x64]
         include:
+          - {os: windows-2022, windows-2019}
           - { compiler: msvc, cc: cl, cxx: cl }
           - { compiler: clang, cc: clang, cxx: clang++ }
           - { compiler: msvc, arch: x86, cross_arch: x64_x86 }
