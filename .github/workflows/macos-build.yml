@@ -80,7 +80,7 @@ jobs:
           dist version-info.txt
           tar -cjvf rime-deps-${{ env.git_ref_name }}-${{ runner.os }}-${{ matrix.build_variant || runner.arch }}.tar.bz2 \
           --exclude '*/.placeholder' \
-          bin include lib share
+          bin include lib share build
 
       - name: Upload artifacts
         if: matrix.create-distributable

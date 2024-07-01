@@ -11,9 +11,15 @@ jobs:
       repository: rime/librime
       branch: master
       rime_plugins: hchunhui/librime-lua lotem/librime-octagram rime/librime-predict
+      
+  macos:
+    uses: wxyzh/librime/.github/workflows/macos-build.yml@Buildlibrime
+    with:
+      repository: rime/librime
+      rime_plugins: hchunhui/librime-lua lotem/librime-octagram rime/librime-predict
 
   release:
-    needs: [windows]
+    needs: [windows, macos]
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
