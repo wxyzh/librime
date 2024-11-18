@@ -10,7 +10,7 @@ jobs:
     with:
       repository: rime/librime
       branch: master
-      rime_plugins: hchunhui/librime-lua lotem/librime-octagram rime/librime-predict
+      rime_plugins: hchunhui/librime-lua lotem/librime-octagram fxliang/librime-predict-leveldb
       
   macos:
     uses: wxyzh/librime/.github/workflows/macos-build.yml@Buildlibrime
